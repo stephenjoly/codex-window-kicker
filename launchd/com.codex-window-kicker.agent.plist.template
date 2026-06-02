@@ -18,6 +18,12 @@
   <key>RunAtLoad</key>
   <true/>
 
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>__PATH__</string>
+  </dict>
+
   <key>StandardOutPath</key>
   <string>__HOME__/Library/Application Support/CodexWindowKicker/codex-window-kicker.log</string>
 

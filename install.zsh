@@ -23,7 +23,10 @@ require_command jq
 mkdir -p "$RUNTIME_DIR" "$LAUNCH_AGENTS_DIR"
 cp "$ROOT_DIR/bin/codex-window-kicker.zsh" "$RUNTIME_DIR/codex-window-kicker.zsh"
 chmod +x "$RUNTIME_DIR/codex-window-kicker.zsh"
-/usr/bin/sed "s|__HOME__|$HOME|g" "$ROOT_DIR/launchd/$PLIST_NAME.template" > "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
+/usr/bin/sed \
+  -e "s|__HOME__|$HOME|g" \
+  -e "s|__PATH__|$PATH|g" \
+  "$ROOT_DIR/launchd/$PLIST_NAME.template" > "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
 
 launchctl bootout "gui/$(id -u)" "$LAUNCH_AGENTS_DIR/$PLIST_NAME" 2>/dev/null || true
 launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true

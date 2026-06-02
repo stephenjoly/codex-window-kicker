@@ -45,6 +45,8 @@ It installs this LaunchAgent:
 
 The runtime copy intentionally lives outside `Documents`, because macOS privacy controls can prevent launchd from executing scripts directly from `Documents`.
 
+The installer captures your current shell `PATH` into the LaunchAgent so that `codex`, `codexbar`, and `jq` are found at runtime. If you install new dependencies after setup, re-run `./install.zsh`.
+
 ## Kickoff Prompt
 
 The automatic kickoff uses a minimal Codex command:
