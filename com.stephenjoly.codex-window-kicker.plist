@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.stephenjoly.codex-window-kicker</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>/Users/stephenjoly/Library/Application Support/CodexWindowKicker/codex-window-kicker.zsh</string>
+  </array>
+
+  <key>StartInterval</key>
+  <integer>300</integer>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <key>StandardOutPath</key>
+  <string>/Users/stephenjoly/Library/Application Support/CodexWindowKicker/codex-window-kicker.log</string>
+
+  <key>StandardErrorPath</key>
+  <string>/Users/stephenjoly/Library/Application Support/CodexWindowKicker/codex-window-kicker.err.log</string>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/stephenjoly/Scratchpad</string>
+</dict>
+</plist>
