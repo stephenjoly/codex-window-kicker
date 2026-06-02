@@ -4,12 +4,12 @@
 <plist version="1.0">
 <dict>
   <key>Label</key>
-  <string>com.stephenjoly.codex-window-kicker</string>
+  <string>com.codex-window-kicker.agent</string>
 
   <key>ProgramArguments</key>
   <array>
     <string>/bin/zsh</string>
-    <string>/Users/stephenjoly/Library/Application Support/CodexWindowKicker/codex-window-kicker.zsh</string>
+    <string>__HOME__/Library/Application Support/CodexWindowKicker/codex-window-kicker.zsh</string>
   </array>
 
   <key>StartInterval</key>
@@ -19,12 +19,12 @@
   <true/>
 
   <key>StandardOutPath</key>
-  <string>/Users/stephenjoly/Library/Application Support/CodexWindowKicker/codex-window-kicker.log</string>
+  <string>__HOME__/Library/Application Support/CodexWindowKicker/codex-window-kicker.log</string>
 
   <key>StandardErrorPath</key>
-  <string>/Users/stephenjoly/Library/Application Support/CodexWindowKicker/codex-window-kicker.err.log</string>
+  <string>__HOME__/Library/Application Support/CodexWindowKicker/codex-window-kicker.err.log</string>
 
   <key>WorkingDirectory</key>
-  <string>/Users/stephenjoly/Scratchpad</string>
+  <string>__HOME__</string>
 </dict>
 </plist>

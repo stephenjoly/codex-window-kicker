@@ -1,0 +1,27 @@
+<svg width="920" height="500" viewBox="0 0 920 500" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Codex Window Kicker terminal demo</title>
+  <desc id="desc">A terminal-style screenshot showing installation and a successful dry run.</desc>
+  <rect width="920" height="500" rx="18" fill="#0B1020"/>
+  <rect x="24" y="24" width="872" height="452" rx="14" fill="#111827" stroke="#273449"/>
+  <circle cx="54" cy="54" r="7" fill="#FF5F57"/>
+  <circle cx="78" cy="54" r="7" fill="#FFBD2E"/>
+  <circle cx="102" cy="54" r="7" fill="#28C840"/>
+  <text x="456" y="60" text-anchor="middle" fill="#93A4B8" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="14">zsh - codex-window-kicker</text>
+
+  <text x="52" y="112" fill="#6EE7B7" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="18">❯</text>
+  <text x="82" y="112" fill="#E5E7EB" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="18">git clone https://github.com/stephenjoly/codex-window-kicker.git</text>
+  <text x="82" y="144" fill="#9CA3AF" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="16">Cloning into 'codex-window-kicker'...</text>
+
+  <text x="52" y="196" fill="#6EE7B7" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="18">❯</text>
+  <text x="82" y="196" fill="#E5E7EB" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="18">cd codex-window-kicker &amp;&amp; ./install.zsh</text>
+  <text x="82" y="228" fill="#A7F3D0" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="16">Installed com.codex-window-kicker.agent</text>
+  <text x="82" y="256" fill="#9CA3AF" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="16">Logs: ~/Library/Application Support/CodexWindowKicker/codex-window-kicker.log</text>
+
+  <text x="52" y="308" fill="#6EE7B7" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="18">❯</text>
+  <text x="82" y="308" fill="#E5E7EB" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="18">DRY_RUN=1 ~/Library/Application\ Support/CodexWindowKicker/codex-window-kicker.zsh</text>
+  <text x="82" y="340" fill="#FDE68A" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="16">[codex-window-kicker] not fresh-unused; used=42% reset_in=137m</text>
+
+  <text x="52" y="392" fill="#6EE7B7" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="18">❯</text>
+  <text x="82" y="392" fill="#E5E7EB" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="18">tail -f ~/Library/Application\ Support/CodexWindowKicker/codex-window-kicker.log</text>
+  <text x="82" y="424" fill="#93C5FD" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="16">polling every 5 minutes; kickoff waits for 10 minutes idle</text>
+</svg>

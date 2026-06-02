@@ -1,50 +1,98 @@
 # Codex Window Kicker
 
-Starts a fresh Codex usage window automatically after a reset if the window is still unused.
+Start a fresh Codex usage window automatically after it resets.
 
-The LaunchAgent runs every 5 minutes. The script checks Codex usage through CodexBar:
+Codex Window Kicker runs quietly in the background on macOS. Every 5 minutes it asks CodexBar for your Codex usage status. If the 5-hour window is freshly reset, still unused, and remains unused for 10 minutes, it sends one tiny `pong` prompt to start the new window.
+
+![Terminal demo](assets/terminal-demo.svg)
+
+## Why
+
+If your Codex limit resets while you are away, the next usage window may not start until you send your next prompt. This utility starts that window shortly after reset so the next reset is already counting down when you return.
+
+## Requirements
+
+- macOS
+- [Codex CLI](https://github.com/openai/codex)
+- [CodexBar](https://github.com/steipete/CodexBar)
+- `jq`
+
+CodexBar must already be able to report Codex usage:
 
 ```sh
 codexbar usage --provider codex --source oauth --format json --json-only
 ```
 
-When the primary 5-hour window is fresh, `usedPercent` is `0`, and that state has remained true for 10 minutes, it runs one tiny Codex prompt:
-
-```sh
-codex exec -C /Users/stephenjoly/Scratchpad --skip-git-repo-check -s read-only -a never "Reply exactly: pong"
-```
-
 ## Install
 
-Install the runnable copy outside `Documents` so launchd is not blocked by macOS privacy controls:
-
 ```sh
-mkdir -p "$HOME/Library/Application Support/CodexWindowKicker" "$HOME/Library/LaunchAgents"
-cp codex-window-kicker.zsh "$HOME/Library/Application Support/CodexWindowKicker/"
-chmod +x "$HOME/Library/Application Support/CodexWindowKicker/codex-window-kicker.zsh"
-cp com.stephenjoly.codex-window-kicker.plist "$HOME/Library/LaunchAgents/"
-launchctl bootstrap gui/$(id -u) "$HOME/Library/LaunchAgents/com.stephenjoly.codex-window-kicker.plist"
-launchctl kickstart -k gui/$(id -u)/com.stephenjoly.codex-window-kicker
+git clone https://github.com/stephenjoly/codex-window-kicker.git
+cd codex-window-kicker
+./install.zsh
 ```
 
-Reload after changes:
+The installer copies the runtime script to:
 
-```sh
-cp com.stephenjoly.codex-window-kicker.plist ~/Library/LaunchAgents/
-cp codex-window-kicker.zsh "$HOME/Library/Application Support/CodexWindowKicker/"
-launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.stephenjoly.codex-window-kicker.plist
-launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.stephenjoly.codex-window-kicker.plist
-launchctl kickstart -k gui/$(id -u)/com.stephenjoly.codex-window-kicker
+```text
+~/Library/Application Support/CodexWindowKicker/
 ```
 
-## Logs
+It installs this LaunchAgent:
+
+```text
+~/Library/LaunchAgents/com.codex-window-kicker.agent.plist
+```
+
+The runtime copy intentionally lives outside `Documents`, because macOS privacy controls can prevent launchd from executing scripts directly from `Documents`.
+
+## Kickoff Prompt
+
+The automatic kickoff uses a minimal Codex command:
 
 ```sh
+codex exec \
+  --skip-git-repo-check \
+  --ephemeral \
+  --ignore-user-config \
+  --ignore-rules \
+  --sandbox read-only \
+  --disable plugins \
+  --disable apps \
+  --disable browser_use \
+  --disable browser_use_external \
+  --disable computer_use \
+  --disable image_generation \
+  --disable multi_agent \
+  --disable shell_tool \
+  --disable unified_exec \
+  -m gpt-5.4-mini \
+  -c 'model_reasoning_effort="low"' \
+  "Reply exactly: pong"
+```
+
+## Check Status
+
+```sh
+launchctl print gui/$(id -u)/com.codex-window-kicker.agent
 tail -f "$HOME/Library/Application Support/CodexWindowKicker/codex-window-kicker.log"
 ```
 
-## Disable
+## Dry Run
+
+Run the script without spending the kickoff prompt:
 
 ```sh
-launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/com.stephenjoly.codex-window-kicker.plist
+DRY_RUN=1 "$HOME/Library/Application Support/CodexWindowKicker/codex-window-kicker.zsh"
+```
+
+## Uninstall
+
+```sh
+./uninstall.zsh
+```
+
+To also remove logs and state:
+
+```sh
+rm -rf "$HOME/Library/Application Support/CodexWindowKicker"
 ```

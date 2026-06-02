@@ -1,19 +1,47 @@
 #!/bin/zsh
 set -u
 
-CODEXBAR="${CODEXBAR:-/opt/homebrew/bin/codexbar}"
-CODEX="${CODEX:-/opt/homebrew/bin/codex}"
-WORKDIR="${WORKDIR:-/Users/stephenjoly/Scratchpad}"
-STATE_DIR="${STATE_DIR:-/Users/stephenjoly/Library/Application Support/CodexWindowKicker/state}"
+APP_NAME="CodexWindowKicker"
+RUNTIME_DIR="${RUNTIME_DIR:-$HOME/Library/Application Support/$APP_NAME}"
+STATE_DIR="${STATE_DIR:-$RUNTIME_DIR/state}"
 LOG_PREFIX="${LOG_PREFIX:-codex-window-kicker}"
 
 POLL_IDLE_SECONDS="${POLL_IDLE_SECONDS:-600}"
 SUPPRESS_AFTER_KICK_SECONDS="${SUPPRESS_AFTER_KICK_SECONDS:-16200}" # 4.5 hours
 FRESH_WINDOW_MINUTES_MIN="${FRESH_WINDOW_MINUTES_MIN:-295}"
 FRESH_WINDOW_MINUTES_MAX="${FRESH_WINDOW_MINUTES_MAX:-305}"
+CODEXBAR_SOURCE="${CODEXBAR_SOURCE:-oauth}"
 DRY_RUN="${DRY_RUN:-0}"
 
+resolve_binary() {
+  local name="$1"
+  shift
+
+  for candidate in "$@"; do
+    if [[ -x "$candidate" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+
+  if command -v "$name" >/dev/null 2>&1; then
+    command -v "$name"
+    return 0
+  fi
+
+  return 1
+}
+
+CODEXBAR="${CODEXBAR:-$(resolve_binary codexbar /opt/homebrew/bin/codexbar /usr/local/bin/codexbar)}"
+CODEX="${CODEX:-$(resolve_binary codex /opt/homebrew/bin/codex /usr/local/bin/codex)}"
+JQ="${JQ:-$(resolve_binary jq /opt/homebrew/bin/jq /usr/local/bin/jq /usr/bin/jq)}"
+
 mkdir -p "$STATE_DIR"
+
+if [[ -z "${CODEXBAR:-}" || -z "${CODEX:-}" || -z "${JQ:-}" ]]; then
+  echo "[$LOG_PREFIX] missing dependency; codexbar=${CODEXBAR:-missing} codex=${CODEX:-missing} jq=${JQ:-missing}"
+  exit 0
+fi
 
 LOCK_DIR="$STATE_DIR/lock"
 if ! mkdir "$LOCK_DIR" 2>/dev/null; then
@@ -42,16 +70,37 @@ parse_utc_epoch() {
   date -u -j -f "%Y-%m-%dT%H:%M:%SZ" "$iso" "+%s" 2>/dev/null
 }
 
-usage_json="$("$CODEXBAR" usage --provider codex --source oauth --format json --json-only 2>&1)"
+run_kickoff_prompt() {
+  "$CODEX" exec \
+    --skip-git-repo-check \
+    --ephemeral \
+    --ignore-user-config \
+    --ignore-rules \
+    --sandbox read-only \
+    --disable plugins \
+    --disable apps \
+    --disable browser_use \
+    --disable browser_use_external \
+    --disable computer_use \
+    --disable image_generation \
+    --disable multi_agent \
+    --disable shell_tool \
+    --disable unified_exec \
+    -m gpt-5.4-mini \
+    -c 'model_reasoning_effort="low"' \
+    "Reply exactly: pong"
+}
+
+usage_json="$("$CODEXBAR" usage --provider codex --source "$CODEXBAR_SOURCE" --format json --json-only 2>&1)"
 codexbar_status=$?
 if [[ $codexbar_status -ne 0 ]]; then
   log "codexbar status failed: $usage_json"
   exit 0
 fi
 
-used_percent="$(printf '%s' "$usage_json" | /usr/bin/jq -er '.[0].usage.primary.usedPercent')"
-resets_at="$(printf '%s' "$usage_json" | /usr/bin/jq -er '.[0].usage.primary.resetsAt')"
-account="$(printf '%s' "$usage_json" | /usr/bin/jq -r '.[0].usage.accountEmail // "unknown"')"
+used_percent="$(printf '%s' "$usage_json" | "$JQ" -er '.[0].usage.primary.usedPercent')"
+resets_at="$(printf '%s' "$usage_json" | "$JQ" -er '.[0].usage.primary.resetsAt')"
+account="$(printf '%s' "$usage_json" | "$JQ" -r '.[0].usage.accountEmail // "unknown"')"
 
 reset_epoch="$(parse_utc_epoch "$resets_at" || true)"
 if [[ -z "${reset_epoch:-}" ]]; then
@@ -95,11 +144,11 @@ fi
 
 log "fresh-unused confirmed after ${idle_seconds}s; running kickoff prompt"
 if [[ "$DRY_RUN" == "1" ]]; then
-  log "dry-run enabled; would run: $CODEX exec -C $WORKDIR --skip-git-repo-check -s read-only -a never \"Reply exactly: pong\""
+  log "dry-run enabled; would run minimal pong prompt with gpt-5.4-mini"
   exit 0
 fi
 
-"$CODEX" exec -C "$WORKDIR" --skip-git-repo-check -s read-only -a never "Reply exactly: pong"
+run_kickoff_prompt
 kick_status=$?
 if [[ "$kick_status" -eq 0 ]]; then
   printf '%s\n' "$now_epoch" > "$last_kicked_file"
