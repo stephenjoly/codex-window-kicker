@@ -14,14 +14,10 @@ If your Codex limit resets while you are away, the next usage window may not sta
 
 - macOS
 - [Codex CLI](https://github.com/openai/codex)
-- [CodexBar](https://github.com/steipete/CodexBar)
-- `jq`
+- [CodexBar CLI](https://github.com/steipete/CodexBar) — reports Codex usage status
+- [jq](https://jqlang.github.io/jq/) — command-line JSON processor
 
-CodexBar must already be able to report Codex usage:
-
-```sh
-codexbar usage --provider codex --source oauth --format json --json-only
-```
+All three can be installed with [Homebrew](https://brew.sh). The installer will offer to install any missing dependencies automatically.
 
 ## Install
 

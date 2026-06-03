@@ -108,7 +108,7 @@ first_seen_file="$STATE_DIR/first_seen_fresh_zero_epoch"
 last_kicked_file="$STATE_DIR/last_kicked_epoch"
 
 log() {
-  echo "[$LOG_PREFIX] $(date -u '+%Y-%m-%dT%H:%M:%SZ') $*"
+  echo "[$LOG_PREFIX] $(date '+%Y-%m-%dT%H:%M:%S%z') $*"
 }
 
 read_epoch_file() {
