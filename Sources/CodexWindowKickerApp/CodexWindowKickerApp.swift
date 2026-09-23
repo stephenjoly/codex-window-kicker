@@ -42,7 +42,9 @@ final class KickerViewModel {
         paths: RuntimePaths = .default,
         statusReader: (any StatusReading)? = nil,
         controller: KickerController? = nil,
-        openURL: @escaping (URL) -> Void = { NSWorkspace.shared.open($0) }
+        openURL: @escaping (URL) -> Void = { url in
+            _ = NSWorkspace.shared.open(url)
+        }
     ) {
         self.paths = paths
         self.statusReader = statusReader ?? FileStatusReader(fileURL: paths.statusURL)
