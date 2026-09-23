@@ -28,7 +28,7 @@ final class StatusTests: XCTestCase {
     }
 
     func testRejectsMalformedTimestamp() {
-        let data = Data("""{"schemaVersion":1,"enabled":true,"lastPollAt":"later","usagePercent":null,"resetAt":null,"lastKickoffAt":null,"lastError":null}""".utf8)
+        let data = Data(#"{"schemaVersion":1,"enabled":true,"lastPollAt":"later","usagePercent":null,"resetAt":null,"lastKickoffAt":null,"lastError":null}"#.utf8)
         XCTAssertThrowsError(try JSONDecoder().decode(KickerStatus.self, from: data))
     }
 
