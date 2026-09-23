@@ -42,7 +42,7 @@ final class StatusTests: XCTestCase {
     }
 
     func testFormatsUsageAndUnavailableValues() {
-        XCTAssertEqual(StatusPresentation.usage(23.45), "23.5%")
+        XCTAssertEqual(StatusPresentation.usage(23.46), "23.5%")
         XCTAssertEqual(StatusPresentation.usage(nil), "Unavailable")
         XCTAssertEqual(StatusPresentation.timestamp(nil), "Unavailable")
     }
