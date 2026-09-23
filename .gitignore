@@ -3,3 +3,6 @@ state/
 .DS_Store
 *.plist
 !launchd/*.plist.template
+.build/
+.swiftpm/
+*.xcuserstate
