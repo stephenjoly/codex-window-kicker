@@ -1,0 +1,34 @@
+name: macOS checks
+
+on:
+  push:
+    branches: [feat/mac-menu-bar-wrapper]
+  pull_request:
+    branches: [feat/agent-toggle]
+
+jobs:
+  test:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tool versions
+        run: |
+          sw_vers
+          swift --version
+          zsh --version
+      - name: Shell syntax and behavior
+        run: |
+          for script in install.zsh uninstall.zsh bin/*.zsh scripts/*.zsh tests/shell/*.zsh; do
+            zsh -n "$script"
+          done
+          zsh tests/shell/test-status-and-control.zsh
+      - name: Swift tests and release build
+        run: |
+          swift test
+          swift build -c release
+      - name: Assemble local app bundle
+        run: |
+          zsh scripts/install-menu-bar-app.zsh
+          plutil -lint app/Info.plist
+          test -x "$HOME/Applications/Codex Window Kicker.app/Contents/MacOS/CodexWindowKicker"
+          /usr/libexec/PlistBuddy -c 'Print :LSUIElement' "$HOME/Applications/Codex Window Kicker.app/Contents/Info.plist" | grep -qx true

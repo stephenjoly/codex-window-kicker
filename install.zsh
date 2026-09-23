@@ -74,8 +74,7 @@ launchctl bootout "gui/$(id -u)/$LABEL" 2>/dev/null || true
 launchctl bootout "gui/$(id -u)/$LEGACY_LABEL" 2>/dev/null || true
 rm -f "$LEGACY_PLIST"
 
-launchctl bootstrap "gui/$(id -u)" "$LAUNCH_AGENTS_DIR/$PLIST_NAME"
-launchctl kickstart -k "gui/$(id -u)/$LABEL"
+"$RUNTIME_DIR/codex-window-kicker-control.zsh" on
 
 echo "Installed $LABEL"
 echo "Logs: $RUNTIME_DIR/codex-window-kicker.log"
