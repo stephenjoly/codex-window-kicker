@@ -1,11 +1,11 @@
 import AppKit
+import Combine
 import CodexWindowKickerCore
-import Observation
 import SwiftUI
 
 @main
 struct CodexWindowKickerApp: App {
-    @State private var model = KickerViewModel()
+    @StateObject private var model = KickerViewModel()
 
     var body: some Scene {
         MenuBarExtra("Codex Window Kicker", systemImage: model.menuBarState.symbolName) {
@@ -22,21 +22,20 @@ struct CodexWindowKickerApp: App {
 }
 
 @MainActor
-@Observable
-final class KickerViewModel {
+final class KickerViewModel: ObservableObject {
     let paths: RuntimePaths
     private let statusReader: any StatusReading
     private let controller: KickerController
     private let openURL: (URL) -> Void
     private var refreshTimer: Timer?
 
-    var status: KickerStatus?
-    var launchAgentEnabled: Bool?
-    var readError: String?
-    var controlStateError: String?
-    var actionError: String?
-    var successMessage: String?
-    var isPerformingAction = false
+    @Published var status: KickerStatus?
+    @Published var launchAgentEnabled: Bool?
+    @Published var readError: String?
+    @Published var controlStateError: String?
+    @Published var actionError: String?
+    @Published var successMessage: String?
+    @Published var isPerformingAction = false
 
     init(
         paths: RuntimePaths = .default,
@@ -150,7 +149,7 @@ private extension MenuBarState {
 }
 
 private struct KickerPopover: View {
-    @Bindable var model: KickerViewModel
+    @ObservedObject var model: KickerViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -158,7 +157,13 @@ private struct KickerPopover: View {
                 Label("Codex Window Kicker", systemImage: model.menuBarState.symbolName)
                     .font(.headline)
                 Spacer()
-                Toggle("Enabled", isOn: Binding(get: { model.enabled }, set: model.setEnabled))
+                Toggle(
+                    "Enabled",
+                    isOn: Binding(
+                        get: { model.enabled },
+                        set: { newValue in model.setEnabled(newValue) }
+                    )
+                )
                     .labelsHidden()
                     .disabled(model.isPerformingAction)
                     .accessibilityLabel("Enabled")
@@ -188,8 +193,8 @@ private struct KickerPopover: View {
             Divider()
 
             HStack {
-                Button("View Logs", action: model.showLogs)
-                Button("Run Dry Check", action: model.dryCheck)
+                Button("View Logs") { model.showLogs() }
+                Button("Run Dry Check") { model.dryCheck() }
                     .disabled(model.isPerformingAction)
                 Spacer()
                 SettingsLink { Text("Settings") }
