@@ -62,6 +62,8 @@ fi
 mkdir -p "$RUNTIME_DIR" "$LAUNCH_AGENTS_DIR"
 cp "$ROOT_DIR/bin/codex-window-kicker.zsh" "$RUNTIME_DIR/codex-window-kicker.zsh"
 chmod +x "$RUNTIME_DIR/codex-window-kicker.zsh"
+cp "$ROOT_DIR/bin/codex-window-kicker-control.zsh" "$RUNTIME_DIR/codex-window-kicker-control.zsh"
+chmod +x "$RUNTIME_DIR/codex-window-kicker-control.zsh"
 /usr/bin/sed \
   -e "s|__HOME__|$HOME|g" \
   -e "s|__PATH__|$PATH|g" \
@@ -77,3 +79,4 @@ launchctl kickstart -k "gui/$(id -u)/$LABEL"
 
 echo "Installed $LABEL"
 echo "Logs: $RUNTIME_DIR/codex-window-kicker.log"
+echo "Control: $RUNTIME_DIR/codex-window-kicker-control.zsh <on|off|status>"

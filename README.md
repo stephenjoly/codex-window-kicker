@@ -71,9 +71,23 @@ codex exec \
 ## Check Status
 
 ```sh
-launchctl print gui/$(id -u)/com.codex-window-kicker.agent
+"$HOME/Library/Application Support/CodexWindowKicker/codex-window-kicker-control.zsh" status
 tail -f "$HOME/Library/Application Support/CodexWindowKicker/codex-window-kicker.log"
 ```
+
+## Enable or Disable
+
+Keep the installation and its state, but stop or resume automatic kickoff prompts:
+
+```sh
+CONTROL="$HOME/Library/Application Support/CodexWindowKicker/codex-window-kicker-control.zsh"
+
+"$CONTROL" off    # stop the LaunchAgent
+"$CONTROL" on     # load and start it again
+"$CONTROL" status # check whether it is enabled
+```
+
+Run `./install.zsh` once after updating to install the control command.
 
 ## Dry Run
 
