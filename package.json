@@ -1,0 +1,11 @@
+{
+  "name": "codex-window-kicker-qa",
+  "private": true,
+  "scripts": {
+    "qa:install": "playwright install",
+    "qa:browser": "node scripts/qa-browser.cjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}

@@ -94,3 +94,17 @@ To also remove logs and state:
 ```sh
 rm -rf "$HOME/Library/Application Support/CodexWindowKicker"
 ```
+
+## Agent browser QA
+
+Paseo’s `paseo.json` worktree setup installs dependencies and matching browser binaries automatically. For existing checkouts, use Node.js 22+ and run:
+
+```bash
+npm ci
+npx playwright install
+npm run qa:browser
+```
+
+This repository has no browser application entrypoint. `qa:browser` verifies Chromium launch and interaction only. Use existing native/offline checks for application behavior; Playwright does not automate native macOS UI.
+
+Agents may run these commands autonomously for authorized local QA. Keep test data synthetic and do not submit real messages, calls, or production writes. Retain failure traces/screenshots outside Git; report failed and skipped tests explicitly. Browser caches are shared per host, while dependencies are installed per worktree.

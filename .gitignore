@@ -3,3 +3,9 @@ state/
 .DS_Store
 *.plist
 !launchd/*.plist.template
+
+node_modules/
+
+playwright-report/
+
+test-results/
