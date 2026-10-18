@@ -57,6 +57,8 @@ Running install or uninstall without a provider still targets Codex. Installing 
 
 ## Install
 
+For an always-on Linux server, see [server setup and rollback](server/README.md). The server uses systemd timers and existing provider logins in the Paseo container. Keep a single scheduler per account: verify the server first, then turn off the Mac jobs.
+
 ```sh
 git clone https://github.com/stephenjoly/codex-window-kicker.git
 cd codex-window-kicker

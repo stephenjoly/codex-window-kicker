@@ -1,0 +1,10 @@
+[Unit]
+Description=Subscription usage window kicker (%i)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 %h/.local/share/window-kicker/window_kicker.py --config %h/.config/window-kicker/%i.json
+TimeoutStartSec=7min
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true

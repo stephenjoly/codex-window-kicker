@@ -9,3 +9,6 @@
 - Claude requires subscription authentication, removes API billing overrides, and uses a tool-free Haiku prompt. No real prompt is necessary for offline validation.
 - Verify: `python3 -m unittest discover -s tests -v`; `zsh -n` for each shell script; `plutil -lint` on rendered LaunchAgent plists; `git diff --check`.
 - Tests use temporary HOME, synthetic usage/auth data, mock provider CLIs and launchctl. Never point test mutations at the live service.
+- Linux deployment lives under `server/`: one Python runner shared by both providers, two systemd timer instances, and explicit bindings to verified account-email hashes. It invokes existing authenticated CLIs as `paseo` in the existing container; no credentials are copied.
+- Linux usage sources: Claude OAuth (CLI probes can hang), Codex CLI RPC. A successful Codex snapshot can contain only a weekly limit; this is a safe no-op, not an unused five-hour window.
+- Operational owner after migration: vm-dev. Both MacBook LaunchAgents are disabled with runtime files/state retained. See `server/README.md` for status and rollback.

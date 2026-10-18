@@ -1,0 +1,11 @@
+[Unit]
+Description=Check subscription usage window every five minutes (%i)
+
+[Timer]
+OnBootSec=2min
+OnUnitInactiveSec=5min
+AccuracySec=10s
+Unit=window-kicker@%i.service
+
+[Install]
+WantedBy=timers.target
