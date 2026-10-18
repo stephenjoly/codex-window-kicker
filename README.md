@@ -2,6 +2,8 @@
 
 Start a fresh Codex usage window automatically after it resets.
 
+Also supports Claude Code, with its own background job and independent controls.
+
 Codex Window Kicker runs quietly in the background on macOS. Every 5 minutes it asks CodexBar for your Codex usage status. If the 5-hour window is freshly reset, still unused, and remains unused for 10 minutes, it sends one tiny `pong` prompt to start the new window.
 
 ![Terminal demo](assets/terminal-demo.svg)
@@ -18,6 +20,40 @@ If your Codex limit resets while you are away, the next usage window may not sta
 - [jq](https://jqlang.github.io/jq/) — command-line JSON processor
 
 All three can be installed with [Homebrew](https://brew.sh). The installer will offer to install any missing dependencies automatically.
+
+For Claude, install Claude Code instead of Codex CLI and sign in with your Claude subscription (`claude auth login`). CodexBar and jq are still required.
+
+## Claude background kickoff
+
+```sh
+./install.zsh claude
+```
+
+This enables a separate `com.claude-window-kicker.agent` LaunchAgent. Every five minutes it checks Claude usage through CodexBar's automatic source. Once the five-hour reset has passed and the window stays idle for ten minutes, it sends one tiny `Reply exactly: pong` prompt using Haiku. If you already started a new window, it skips the prompt—even if usage rounds to 0%.
+
+The kickoff uses your subscription login, with API-key and third-party billing environment overrides removed. It disables tools, MCP servers, session persistence, and user customizations using the installed Claude CLI's [isolation options](https://code.claude.com/docs/en/cli-reference). It skips unavailable/invalid usage data and exhausted weekly limits, suppresses duplicate successful kickoffs, and waits at least fifteen minutes between failed attempts. It does not bypass subscription limits. The Mac must be awake and your user session logged in; it checks again after sleep.
+
+Claude files live in `~/Library/Application Support/ClaudeWindowKicker/`. Manage the job independently:
+
+```sh
+CONTROL="$HOME/Library/Application Support/ClaudeWindowKicker/claude-window-kicker-control.zsh"
+"$CONTROL" status
+"$CONTROL" off
+"$CONTROL" on
+
+tail -f "$HOME/Library/Application Support/ClaudeWindowKicker/claude-window-kicker.log"
+DRY_RUN=1 "$HOME/Library/Application Support/ClaudeWindowKicker/claude-window-kicker.zsh"
+```
+
+Dry-run uses the normal waiting/eligibility checks but never sends a prompt or marks a kickoff successful. If logs report unavailable usage, check `codexbar usage --provider claude --source auto` and your Claude login. OAuth-only CodexBar checks can fail with expired credentials even when the automatic CLI fallback works.
+
+Remove only the Claude LaunchAgent (keep logs/state):
+
+```sh
+./uninstall.zsh claude
+```
+
+Running install or uninstall without a provider still targets Codex. Installing Claude leaves the Codex job and state in place.
 
 ## Install
 

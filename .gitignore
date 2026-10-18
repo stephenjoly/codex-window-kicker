@@ -1,5 +1,6 @@
 *.log
 state/
 .DS_Store
+__pycache__/
 *.plist
 !launchd/*.plist.template
